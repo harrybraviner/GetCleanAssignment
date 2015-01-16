@@ -8,9 +8,11 @@ The data comes from [this UCI machine learning dataset](http://archive.ics.uci.e
 
 ## Output data
 
+### tidyData
+
 Running the included R script will produce a data frame called 'tidyData'.
 This data frame will also be written to the file 'tidyData.txt' in the
-working directory.
+working directory. This is the dataset of *step 4* of the assignment.
 
 The data frame contains variables:
 * subject.id is a factor variable (labelled as ints) indexing
@@ -47,7 +49,21 @@ standard deviation.
 The .(X/Y/Z) indicates the axis along / around which the linear / angular
 acceleration is occurring. This is not present for the 'Mag' variables.
 
+### averagedTidyData
 
+The R script will also produce a variable called 'averagedTidyData'.
+This is the result of, for each subject and activity, averaging each
+variable over all of the records for that subject and activity.
+That is, the submission for part 5 of the assignment.
+The function call acheiving this is
+```{r}
+averagedTidyData <- aggregate(. ~ subject.id + activity, data = tidyData, mean)
+```
+
+This data frame still has the same variables names as above, but the
+last 66 variables ('tBodyAcc.mean.X' through to 'fBodyBodyGyroJerkMag.std')
+are now averages. See the above subsection for that meaning of these
+variable names.
 
 ## Notes
 
@@ -55,6 +71,9 @@ Using the data.table format instead of data.frame might have been faster,
 but on my system this persistently crashed when trying to read in the
 raw data. This may be realted to the presence of leading spaces in the
 data file. See this thread: https://github.com/Rdatatable/data.table/issues/956
+
+The variable names are taken from the 'features.txt' file, but hyphens are
+replaced with periods and parentheses removed.
 
 The data did not contain any missing values, so no scheme to handle NAs
 has been implemented.

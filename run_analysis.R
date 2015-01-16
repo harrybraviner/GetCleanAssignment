@@ -13,7 +13,8 @@ trainingSetFile <- paste(dataDirUnzipped, "train/X_train.txt", sep = "/")
 trainingSubjectFile <- paste(dataDirUnzipped, "train/subject_train.txt", sep = "/")
 trainingLabelsFile <- paste(dataDirUnzipped, "train/y_train.txt", sep = "/")
 
-outputFilename <- paste(workingDir, "tidyData.txt", sep = "/")
+allOutputFilename <- paste(workingDir, "tidyData.txt", sep = "/")
+averagedOutputFilename <- paste(workingDir, "averagedTidyData.txt", sep = "/")
 
 #### Get the data ####
 
@@ -32,7 +33,6 @@ if(!file.exists(dataDirUnzipped)){
 }
 
 # Read the data into memory
-# read.table("data/UCI HAR Dataset/test/X_test.txt", header=F)
 # We're not using fread() since it seems to have trouble with with
 # leading spaces on lines and with multiple spaces between entries.
 #
@@ -106,4 +106,8 @@ tidyData <- rbind(testSubjects, trainingSubjects)
 # The subject.id has no numeric meaning, so a factor variable is more appropriate
 tidyData$subject.id <- factor(tidyData$subject.id)
 
-write.table(tidyData, file = outputFilename, row.names = FALSE, col.names = TRUE) 
+write.table(tidyData, file = allOutputFilename, row.names = FALSE, col.names = TRUE) 
+
+#### Average each variable for each activity and subject ####
+averagedTidyData <- aggregate(. ~ subject.id + activity, data = tidyData, mean)
+write.table(averagedTidyData, file = averagedOutputFilename, row.names = FALSE, col.names = TRUE) 
